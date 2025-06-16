@@ -48,19 +48,13 @@ function streamConnect() {
 
   stream.on('data', async (data) => {
   try {
-    const isBuffer = Buffer.isBuffer(data);
-    const raw = isBuffer ? data.toString() : data;
+    const raw = Buffer.isBuffer(data) ? data.toString() : JSON.stringify(data);
 
-    if (!raw || raw.trim() === '') return; // Ignore empty
+    if (typeof raw !== 'string' || raw.trim() === '') return; // Ignore non-strings or empty
 
-    let tweet;
-    if (typeof raw === 'string') {
-      tweet = JSON.parse(raw);
-    } else {
-      tweet = raw;
-    }
+    const tweet = JSON.parse(raw);
 
-    console.log('🚨 New Tweet:', tweet);
+    console.log('🚨 New Tweet:', JSON.stringify(tweet, null, 2));
 
     await fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
