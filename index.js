@@ -13,7 +13,7 @@ const MAKE_WEBHOOK_URL = process.env.MAKE_WEBHOOK_URL;
 const streamURL = 'https://api.twitter.com/2/tweets/search/stream';
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules';
 
-const trackedUsers = ['elonmusk', 'naval'];
+const trackedUsers = ['elonmusk', 'naval', 'MrBeast', 'garyvee', 'POTUS', 'nikitabier', 'alexhormozi', 'thedankoe', 'sama', 'internetH0F', 'gregisenberg', 'theapplehub', 'IAmPascio', 'OpenAI', 'nytimes', 'BBCBreaking'];
 
 async function setRules() {
   const rules = trackedUsers.map(user => ({
