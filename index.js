@@ -48,22 +48,29 @@ function streamConnect() {
 
   stream.on('data', async (data) => {
   try {
-    const raw = data.toString();
-    if (raw.trim() === '') return; // Ignore empty heartbeats
+    const isBuffer = Buffer.isBuffer(data);
+    const raw = isBuffer ? data.toString() : data;
 
-    const json = JSON.parse(raw);
+    if (!raw || raw.trim() === '') return; // Ignore empty
 
-    console.log('🚨 New Tweet:', json);
+    let tweet;
+    if (typeof raw === 'string') {
+      tweet = JSON.parse(raw);
+    } else {
+      tweet = raw;
+    }
+
+    console.log('🚨 New Tweet:', tweet);
+
     await fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(json),
+      body: JSON.stringify(tweet),
     });
   } catch (e) {
-    console.error('❌ Error parsing stream data:', data.toString());
+    console.error('❌ Error parsing stream data:', e.message);
   }
 });
-
 
   stream.on('err', (error) => {
     console.error('🧨 Stream error', error);
