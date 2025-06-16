@@ -71,6 +71,10 @@ function streamConnect() {
   streamConnect();
 })();
 
+app.get('/', (req, res) => {
+  res.send('✅ Twitter Listener is running.');
+});
+
 app.listen(PORT, () => {
   console.log(`🔥 Server running on port ${PORT}`);
 });
