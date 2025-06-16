@@ -47,18 +47,23 @@ function streamConnect() {
   const stream = needle.get(streamURL, options);
 
   stream.on('data', async (data) => {
-    try {
-      const json = JSON.parse(data);
-      console.log('🚨 New Tweet:', json);
-      await fetch(MAKE_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(json),
-      });
-    } catch (e) {
-      console.error('❌ Error parsing stream data', e);
-    }
-  });
+  try {
+    const raw = data.toString();
+    if (raw.trim() === '') return; // Ignore empty heartbeats
+
+    const json = JSON.parse(raw);
+
+    console.log('🚨 New Tweet:', json);
+    await fetch(MAKE_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(json),
+    });
+  } catch (e) {
+    console.error('❌ Error parsing stream data:', data.toString());
+  }
+});
+
 
   stream.on('err', (error) => {
     console.error('🧨 Stream error', error);
